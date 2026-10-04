@@ -1,62 +1,62 @@
-# 01 レイアウト
+# 01 Layout
 
-## アプリシェル
+## App Shell
 
-全アプリは「左レール + コンテンツ」の 2 カラム構造とする。
+Every app uses a two-column structure: left rail + content.
 
 ```tsx
 <div className="flex h-full">
   <AppRail />
-  <div className="min-w-0 flex-1">{/* コンテンツ */}</div>
+  <div className="min-w-0 flex-1">{/* content */}</div>
 </div>
 ```
 
-- コンテンツ側には必ず `min-w-0 flex-1` を付ける（横スクロール事故防止）
-- タイトルバーは OS ネイティブのまま（`frame: false` にしない）。`autoHideMenuBar: true` + `Menu.setApplicationMenu(null)` でメニューは非表示
-- **例外**: ナビゲーション項目が存在せず、レールに載るものがロゴと設定ボタンだけになるアプリは、左レールを持たずトップバー 1 本に集約してよい。その場合はロゴを左端、アプリ共通アクション（設定ボタン等）を右端に置く
-  - 画面が複数あっても、それらの間を行き来するナビゲーションが存在せず遷移が線形ならこの例外に含める
-  - コンテンツ領域内へ既に縦のツールパレットを持つアプリでは、レールを足すと意味の異なる縦帯が 2 本並ぶ。これは本章が防ごうとしている混乱そのものなので、例外の適用を優先する
+- Always put `min-w-0 flex-1` on the content side (prevents accidental horizontal scrolling)
+- Keep the OS-native title bar (do not set `frame: false`). Hide the menu with `autoHideMenuBar: true` + `Menu.setApplicationMenu(null)`
+- **Exception**: An app with no navigation items, where the rail would hold only the logo and the settings button, may drop the left rail and consolidate everything into a single top bar. In that case, put the logo at the left end and the app-wide actions (settings button, etc.) at the right end
+  - Even when there are multiple screens, this exception applies if there is no navigation back and forth between them and the transition is linear
+  - In an app that already has a vertical tool palette inside the content area, adding a rail would put two vertical strips with different meanings side by side. That is exactly the confusion this chapter is meant to prevent, so the exception takes priority
 
-## 左レール（Slack 風）
+## Left Rail (Slack Style)
 
-画面左端に固定幅の縦型レールを置く。折りたたみ機能は設けない。
+Place a fixed-width vertical rail at the left edge of the screen. It is not collapsible.
 
 ```text
 ┌────┐
-│ 🅰 │ ← アプリアイコン（最上部・固定）
+│ 🅰 │ ← App icon (top, fixed)
 ├────┤
-│ ◻ │ ← コンテンツ依存の項目（スクロール領域）
-│ ◻ │    巡: ワークスペース / コレクション
+│ ◻ │ ← Content-dependent items (scroll area)
+│ ◻ │    meguri: workspaces / collections
 │ ＋ │
-├────┤ ← 区切り線 h-px w-8 bg-border
-│ ⚙ │ ← アプリ共通アクション（最下部・固定）
+├────┤ ← Divider h-px w-8 bg-border
+│ ⚙ │ ← App-wide actions (bottom, fixed)
 └────┘
 ```
 
-- コンテナ: `<nav className="flex h-full w-16 shrink-0 flex-col items-center gap-2 border-r border-border bg-bg py-3">`
-- 幅は `w-16`（64px）固定
-- コンテンツ依存の項目は `ScrollArea`（`min-h-0 w-full flex-1`、`viewportClassName="px-1 pt-1"`）に入れ、多数になってもレール自体は伸びない
-- 項目の並び替えは dnd-kit（`restrictToVerticalAxis` + `restrictToFirstScrollableAncestor`、`activationConstraint: { distance: 4 }`、`animateLayoutChanges: () => false`）で縦方向のみ許可
-- 最下部の固定アクションには必ず「設定」ボタンを含める（`Settings` アイコン）
+- Container: `<nav className="flex h-full w-16 shrink-0 flex-col items-center gap-2 border-r border-border bg-bg py-3">`
+- The width is fixed at `w-16` (64px)
+- Put content-dependent items in a `ScrollArea` (`min-h-0 w-full flex-1`, `viewportClassName="px-1 pt-1"`) so that the rail itself does not grow even with many items
+- Reordering items uses dnd-kit (`restrictToVerticalAxis` + `restrictToFirstScrollableAncestor`, `activationConstraint: { distance: 4 }`, `animateLayoutChanges: () => false`) and is allowed vertically only
+- The fixed actions at the bottom must include a "Settings" button (`Settings` icon)
 
-## ロゴの表示位置
+## Logo Placement
 
-- アプリロゴはレール最上部に `logo/app-256.png` を `size-[50px] shrink-0` で表示する。UI 上のロゴ表示はここ 1 箇所のみ
-- 左レールを持たないアプリ（上記例外）では、トップバー左端に `logo/app-256.png` を `size-8 shrink-0` で表示する。「1 箇所のみ」の原則は同じ
-- ロゴアセットは各リポジトリの `logo/` に共通命名で置く: `app-{32,64,128,256,512}.png`、`appicon-1024.png`、`tray-{16,32,64,256}.png`
-- トレイアイコンは `electron/main.ts` に base64 埋め込み（`TRAY_ICON_BASE64`）で持つ
+- Show the app logo at the top of the rail using `logo/app-256.png` with `size-[50px] shrink-0`. This is the only place the logo appears in the UI
+- In an app without a left rail (the exception above), show `logo/app-256.png` at the left end of the top bar with `size-8 shrink-0`. The "one place only" principle still applies
+- Put logo assets in each repository's `logo/` directory with shared names: `app-{32,64,128,256,512}.png`, `appicon-1024.png`, `tray-{16,32,64,256}.png`
+- The tray icon is embedded as base64 (`TRAY_ICON_BASE64`) in `electron/main.ts`
 
-## トレイアイコン
+## Tray Icon
 
-**全アプリはシステムトレイ（macOS はメニューバー、Windows は通知領域）にアイコンを常駐させること**。トレイ常駐が主体のアプリ（刻）も、ウィンドウが主体のアプリ（巡）も例外なく必須とする。
+**Every app must keep an icon in the system tray (the menu bar on macOS, the notification area on Windows).** This is required without exception, both for tray-centric apps (刻) and for window-centric apps (巡).
 
-- アイコンは全プラットフォーム（macOS を含む）で背景付きの `logo/tray-{16,32,64,256}.png` を使う。`icon-gen` スキルでの生成時に `--no-tray` は付けない（[08 ロゴ](08-logo.md)参照）
-- macOS でもテンプレート画像（`setTemplateImage(true)`）は使わない。背景付きのトレイアイコンをテンプレートにすると、角丸の背景ごと塗りつぶされて字形が見えなくなるため
-- ツールチップにはアプリの表示名（漢字 1 文字）を入れる
-- 左クリックでウィンドウを表示（またはトグル）する
-- コンテキストメニューには最低限「開く」と「終了」を含める。ラベルは i18n の対象とする（[07 i18n](07-i18n.md)参照）
-- トレイは `app.whenReady()` 後に生成し、アプリ終了時に `destroy()` する
+- Use `logo/tray-{16,32,64,256}.png` with a background on every platform (including macOS). Do not pass `--no-tray` when generating with the `icon-gen` skill (see [08 Logo](08-logo.md))
+- Do not use a template image (`setTemplateImage(true)`) on macOS either. Turning a tray icon with a background into a template fills in the entire rounded background and makes the glyph invisible
+- Put the app's display name (single kanji) in the tooltip
+- Left click shows (or toggles) the window
+- The context menu includes at least "Open" and "Quit". The labels are subject to i18n (see [07 i18n](07-i18n.md))
+- Create the tray after `app.whenReady()` and `destroy()` it when the app quits
 
-## アプリ固有パネル
+## App-Specific Panels
 
-コンテンツ領域内のアプリ固有のパネル（右側に置く `w-64` の情報パネル等）は各アプリの裁量で許容する。ただし左レールの役割（グローバルナビゲーション・設定への導線）と重複させないこと。
+App-specific panels inside the content area (such as a `w-64` info panel on the right) are left to each app's discretion. However, they must not duplicate the role of the left rail (global navigation and the path to settings).

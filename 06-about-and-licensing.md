@@ -1,21 +1,21 @@
-# 06 About とライセンス
+# 06 About and Licensing
 
-設定画面の最下部に About セクション（`src/routes/Settings/AboutSection.tsx`）を必ず置く。
+Always place an About section (`src/routes/Settings/AboutSection.tsx`) at the bottom of the settings screen.
 
-## 必須項目
+## Required Items
 
-1. **アプリ名 + バージョン**: `about_info` IPC（`{ version, electron, chrome, node }` を返す `ipcMain.handle`）で取得し、`アプリ名 バージョン {version}` と `Electron / Chromium / Node` の各バージョンを表示する
-2. **GitHub リンク**: `Button variant="outline"` + `ExternalLink` アイコン
-3. **アプリ本体のライセンス表記**: 「<アプリ名> は MIT License の下で公開されています。」+ LICENSE ファイルへのリンク
-4. **サードパーティライセンス一覧（THIRD_PARTY）**: 配布物にバンドルされるソフトウェアのみ列挙する（ビルドツールは含めない）。各エントリに名前・ライセンス種別バッジ・ライセンス / ソースへのリンクを付ける
-5. **全依存パッケージへのリンク**: GitHub 上の package.json へのリンク
+1. **App name + version**: Fetch via the `about_info` IPC (an `ipcMain.handle` that returns `{ version, electron, chrome, node }`) and show `<App name> version {version}` along with the versions of `Electron / Chromium / Node`
+2. **GitHub link**: `Button variant="outline"` + the `ExternalLink` icon
+3. **License notice for the app itself**: "\<App name\> is released under the MIT License." + a link to the LICENSE file
+4. **Third-party license list (THIRD_PARTY)**: List only software bundled into the distributed artifacts (do not include build tools). Each entry has a name, a license type badge, and links to the license / source
+5. **Link to all dependencies**: A link to package.json on GitHub
 
-## 法的注意
+## Legal Notes
 
-- GPL 等のコピーレフトライセンスのバイナリをバンドルする場合（巡の FFmpeg 等）は、ライセンス文と対応ソースの入手先を必ず明示する
-- 外部 URL はすべて `api.openUrl()`（メインプロセスの `shell.openExternal`、http/https のみ許可）経由で開く
+- When bundling binaries under a copyleft license such as the GPL (e.g. FFmpeg in meguri), always state the license text and where to obtain the corresponding source
+- Open every external URL through `api.openUrl()` (`shell.openExternal` in the main process, http/https only)
 
-## IPC 実装
+## IPC Implementation
 
 ```ts
 ipcMain.handle("about_info", () => ({
@@ -26,4 +26,4 @@ ipcMain.handle("about_info", () => ({
 }));
 ```
 
-preload の `INVOKE_CHANNELS` 許可リストに `"about_info"` を追加し、レンダラの `api.aboutInfo()` から呼ぶ。
+Add `"about_info"` to the `INVOKE_CHANNELS` allowlist in preload and call it from the renderer via `api.aboutInfo()`.

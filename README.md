@@ -1,33 +1,35 @@
-# 座布団シリーズ ガイドライン
+# Zabuton Series Guidelines
 
-座布団（zabuton）ブランドの全アプリで、ブランド表現・画面 UI・リリース運用を統一するためのルール集。新しいアプリを作るとき、既存アプリを変更するときは、必ずこのガイドラインに従うこと。
+A set of rules for keeping brand expression, screen UI, and release operations consistent across every app under the 座布団 (zabuton) brand. Follow these guidelines whenever you create a new app or change an existing one.
 
-## 適用範囲
+The English version is the source of truth. A Japanese translation is available in [ja/](ja/README.md).
 
-- [巡（meguri）](../meguri/) — ローカルメディアブラウザ。本ガイドラインのリファレンス実装
-- [刻（kizami）](../kizami/) — トレイ常駐ポモドーロタイマー
-- 今後追加される座布団シリーズの全アプリ
+## Scope
 
-## 章立て
+- [巡 (meguri)](https://github.com/zabuton-app/meguri) — Local media browser. The reference implementation of these guidelines
+- [刻 (kizami)](https://github.com/zabuton-app/kizami) — Pomodoro timer that lives in the tray
+- Every app added to the zabuton series in the future
 
-- [00 ブランドと命名](00-brand.md) — シリーズ名・アプリ命名規則・表示名の規約
-- [01 レイアウト](01-layout.md) — アプリシェル（左レール + コンテンツ）・ロゴの表示位置・トレイアイコン
-- [02 ナビゲーション](02-navigation.md) — ルーティングとルーテッドモーダルの規約
-- [03 設定画面](03-settings.md) — 設定モーダルの寸法・セクション構成・行パターン
-- [04 テーマ](04-theme.md) — Base16 カラーシステムと対応必須テーマ
-- [05 コンポーネント](05-components.md) — 共有 UI コンポーネントとレールボタン仕様
-- [06 About とライセンス](06-about-and-licensing.md) — About セクションの必須項目
-- [07 i18n](07-i18n.md) — 翻訳キーの命名規約と Provider の API 形
-- [08 ロゴ](08-logo.md) — 漢字 1 文字ロゴの構成・カラー・書き出しサイズ
-- [09 リリースと更新確認](09-release-and-update.md) — バージョニング・配布・アプリ内更新通知
-- [10 記述言語](10-language.md) — リポジトリ成果物は英語・日本語で書く例外の一覧
-- [11 E2Eテスト](11-e2e-testing.md) — E2EはXvfb上でX11に固定して実行する
-- [12 マスコット](12-mascot.md) — 公式キャラクターの位置づけ・アセットの置き場所・背景による使い分け
+## Chapters
 
-## 基本原則
+- [00 Brand and Naming](00-brand.md) — Series name, app naming rules, and display name conventions
+- [01 Layout](01-layout.md) — App shell (left rail + content), logo placement, and tray icon
+- [02 Navigation](02-navigation.md) — Conventions for routing and routed modals
+- [03 Settings Screen](03-settings.md) — Settings modal dimensions, section structure, and row pattern
+- [04 Theme](04-theme.md) — Base16 color system and required themes
+- [05 Components](05-components.md) — Shared UI components and rail button specs
+- [06 About and Licensing](06-about-and-licensing.md) — Required items in the About section
+- [07 i18n](07-i18n.md) — Translation key naming conventions and the Provider API shape
+- [08 Logo](08-logo.md) — Composition, colors, and export sizes of the single-kanji logo
+- [09 Release and Update Checks](09-release-and-update.md) — Versioning, distribution, and in-app update notifications
+- [10 Writing Language](10-language.md) — Repository artifacts are in English, plus the list of exceptions written in Japanese
+- [11 E2E Testing](11-e2e-testing.md) — E2E tests run on Xvfb, pinned to X11
+- [12 Mascot](12-mascot.md) — Role of the official character, where its assets live, and which variant to use per background
 
-- **技術スタックの統一**: Electron + React 19 + TypeScript + Tailwind CSS v4 + shadcn/ui（Radix）+ lucide-react + TanStack Query
-  - TanStack Query はサーバ状態やキャッシュ・無効化を要する非同期リードを持つアプリに限る。それらが無いアプリは導入しなくてよい
-- **リポジトリの記述言語は英語**: コード・ドキュメント・コミット・Issue/PR は英語で書く。例外は [10 記述言語](10-language.md) を参照
-- **リファレンスは巡**: 迷ったら巡の実装を正とする。共有コードはコピー運用（パッケージ化はしない）とし、コピー後に独自の差分を作らない
-- **ファイル構成を揃える**: `src/components/<App>Rail.tsx`、`src/routes/Settings/{index,SettingsModal,AboutSection}.tsx`、`src/themes/{base16,schemes,ThemeProvider}.ts(x)` のように、同じ役割のファイルは同じ場所・同じ名前に置く
+## Core Principles
+
+- **Unified tech stack**: Electron + React 19 + TypeScript + Tailwind CSS v4 + shadcn/ui (Radix) + lucide-react + TanStack Query
+  - TanStack Query is only for apps that have server state or asynchronous reads requiring caching and invalidation. Apps without them do not need to adopt it
+- **Repositories are written in English**: Code, documentation, commits, and issues/PRs are written in English. See [10 Writing Language](10-language.md) for the exceptions
+- **meguri is the reference**: When in doubt, treat the meguri implementation as correct. Shared code is maintained by copying (not packaged), and no app-specific differences are introduced after copying
+- **Align the file structure**: Files with the same role go in the same place under the same name, such as `src/components/<App>Rail.tsx`, `src/routes/Settings/{index,SettingsModal,AboutSection}.tsx`, and `src/themes/{base16,schemes,ThemeProvider}.ts(x)`

@@ -1,34 +1,34 @@
-# 05 コンポーネント
+# 05 Components
 
-## 共有 UI コンポーネント（shadcn/ui パターン）
+## Shared UI Components (shadcn/ui Pattern)
 
-- `src/components/ui/` に shadcn/ui パターン（Radix + CVA）の自前実装を置く: `button` / `dialog` / `select` / `dropdown-menu` / `scroll-area` / `input` / `skeleton` 等
-- クラス結合は `cn()`（`clsx` + `tailwind-merge`、`src/lib/utils.ts`）を使う
-- アイコンは lucide-react、トーストは sonner、並び替えは dnd-kit で統一する
-- **確認ダイアログはアプリ内モーダルの `ConfirmDialog`（`useConfirm()` が `Promise<boolean>` を返す）を使う**。`window.confirm` / `window.alert` 等のネイティブダイアログは禁止（メインウィンドウ以外のウィンドウを開く導線を作らない）。`ConfirmProvider` をアプリルートに置く
+- Put in-house implementations of the shadcn/ui pattern (Radix + CVA) in `src/components/ui/`: `button` / `dialog` / `select` / `dropdown-menu` / `scroll-area` / `input` / `skeleton`, etc.
+- Join classes with `cn()` (`clsx` + `tailwind-merge`, `src/lib/utils.ts`)
+- Standardize on lucide-react for icons, sonner for toasts, and dnd-kit for reordering
+- **For confirmation dialogs, use the in-app modal `ConfirmDialog` (`useConfirm()` returns a `Promise<boolean>`)**. Native dialogs such as `window.confirm` / `window.alert` are prohibited (do not create a path that opens any window other than the main window). Put `ConfirmProvider` at the app root
 
-### コピー運用ルール
+### Copy-Based Sharing Rules
 
-- 共有コンポーネントはアプリ間でコピー同期する。**コピー後に独自の差分を作らない**（整形差分も避ける）
-- 改善はまず巡側に入れ、他アプリへ展開する
-- Button のバリアントは `default / secondary / outline / ghost / destructive` × サイズ `default(h-9) / sm(h-8) / lg(h-10) / icon(h-9 w-9)` を維持する
+- Shared components are kept in sync across apps by copying. **Do not introduce app-specific differences after copying** (avoid formatting-only differences too)
+- Improvements go into meguri first and are then rolled out to the other apps
+- Keep the Button variants `default / secondary / outline / ghost / destructive` × sizes `default(h-9) / sm(h-8) / lg(h-10) / icon(h-9 w-9)`
 
-## レールボタン仕様
+## Rail Button Specs
 
-左レール（[01 レイアウト](01-layout.md)）に置くボタンの共通仕様。
+Common specs for buttons placed on the left rail ([01 Layout](01-layout.md)).
 
-### コンテンツ項目（ワークスペース等）
+### Content Items (Workspaces, etc.)
 
-- サイズ: `size-11`（44px）
-- 非選択: `rounded-2xl bg-surface text-fg hover:rounded-xl hover:bg-overlay`（Slack 風の角丸アニメーション）
-- 選択中: `rounded-xl bg-primary text-primary-foreground ring-2 ring-fg/40`
-- 中身: 絵文字 or イニシャル（英数 2 文字 / 日本語 1〜2 文字を生成する `initials()` を共通利用）or アイコン `size-5`
-- 削除可能な項目はホバーで右上に × ボタン: `absolute -right-1 -top-1 hidden size-4 items-center justify-center rounded-full bg-error text-bg group-hover:flex`
+- Size: `size-11` (44px)
+- Unselected: `rounded-2xl bg-surface text-fg hover:rounded-xl hover:bg-overlay` (Slack-style corner radius animation)
+- Selected: `rounded-xl bg-primary text-primary-foreground ring-2 ring-fg/40`
+- Content: an emoji, or initials (shared `initials()` that generates 2 alphanumeric characters / 1–2 Japanese characters), or an icon at `size-5`
+- Deletable items show a × button at the top right on hover: `absolute -right-1 -top-1 hidden size-4 items-center justify-center rounded-full bg-error text-bg group-hover:flex`
 
-### 追加ボタン
+### Add Button
 
-`rounded-2xl border border-dashed border-border text-muted transition hover:rounded-xl hover:border-primary hover:text-primary` + `Plus` アイコン
+`rounded-2xl border border-dashed border-border text-muted transition hover:rounded-xl hover:border-primary hover:text-primary` + the `Plus` icon
 
-### 最下部の固定アクション
+### Fixed Actions at the Bottom
 
-`rounded-2xl text-muted transition hover:rounded-xl hover:bg-overlay hover:text-fg` + アイコン `size-5`。必ず `title` / `aria-label` を付ける
+`rounded-2xl text-muted transition hover:rounded-xl hover:bg-overlay hover:text-fg` + an icon at `size-5`. Always set `title` / `aria-label`

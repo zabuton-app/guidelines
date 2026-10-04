@@ -1,38 +1,38 @@
-# 10 記述言語
+# 10 Writing Language
 
-## 原則
+## Principle
 
-**リポジトリに残る成果物はすべて英語で書く。** 座布団シリーズは OSS として公開し、GitHub Release / AUR / Microsoft Store の3チャネルで配布する前提なので、リポジトリを訪れた開発者が読める言語に統一する。
+**Every artifact that remains in a repository is written in English.** The zabuton series is published as OSS and is expected to be distributed through three channels (GitHub Release / AUR / Microsoft Store), so everything is unified in a language that developers visiting the repositories can read.
 
-対象は以下すべて。
+This covers all of the following.
 
-- コードコメント・識別子・ログ出力
-- README・`docs/` 配下のドキュメント・landing page
-- コミットメッセージ
-- GitHub の Issue・Pull Request（タイトル・本文・レビューコメント）
-- CI 設定・シェルスクリプト内のコメント
+- Code comments, identifiers, and log output
+- READMEs, documentation under `docs/`, and landing pages
+- Commit messages
+- GitHub issues and pull requests (titles, bodies, and review comments)
+- CI configuration and comments in shell scripts
 
-ユーザー（開発者本人）との会話は従来どおり日本語でよい。英語化の対象はリポジトリに残るものだけ。
+Conversation with the user (the developer themself) can stay in Japanese as before. Only what remains in the repository is subject to being written in English.
 
-## 例外（日本語で書くもの）
+## Exceptions (Written in Japanese)
 
-| 対象 | 理由 |
-| ---- | ---- |
-| 表示名の漢字1文字（巡・刻 等） | ブランド規約。[00 ブランドと命名](00-brand.md)を参照 |
-| i18n の日本語カタログ（`locales/ja.ts` / `i18n/ja.ts`） | 日本語カタログを原典とする。[07 i18n](07-i18n.md)を参照 |
-| 言語セレクトの「日本語」ラベル | `LANGUAGES` の `label` は各言語の自称表記を使う |
-| `guidelines/` 配下（本ガイドライン） | 各アプリのリポジトリ外にある開発者向けの内部ルール |
-| 各アプリの `CLAUDE.md` | ローカル運用ファイルでコミットしない |
+| Target | Reason |
+| ------ | ------ |
+| The single kanji of a display name (巡, 刻, etc.) | Brand convention. See [00 Brand and Naming](00-brand.md) |
+| The Japanese i18n catalog (`locales/ja.ts` / `i18n/ja.ts`) | The Japanese catalog is the source of truth. See [07 i18n](07-i18n.md) |
+| The "日本語" label in the language select | The `label` in `LANGUAGES` uses each language's own name for itself |
+| The Japanese translation of these guidelines (`ja/`) | A translation kept in separate files. The English version is the source of truth |
+| Each app's `CLAUDE.md` | A local operational file that is not committed |
 
-## 判断に迷うとき
+## When in Doubt
 
-- **UI 文言は必ず i18n カタログ経由**にする。ソースに日本語リテラルを直接書かない（表示名の漢字だけが例外）
-- **公開ドキュメントは英語を原典**とする。日本語版が必要になったら別ファイルに分け、英語版を正とする
-- **レビューメモ・作業ログ・調査メモのような一時ファイルは、そもそもリポジトリに置かない**。日本語で書きたくなった時点で、それはリポジトリ外に置くべきファイルという判断材料になる
+- **UI strings always go through the i18n catalog**. Do not write Japanese literals directly in the source (the kanji of the display name is the only exception)
+- **English is the source of truth for public documentation**. If a Japanese version becomes necessary, split it into a separate file and treat the English version as authoritative
+- **Temporary files such as review notes, work logs, and research notes do not belong in the repository in the first place**. The moment you want to write something in Japanese, that is a sign the file should live outside the repository
 
-## リリース前チェック
+## Pre-Release Check
 
-追跡対象ファイルに日本語が混入していないかは、以下で洗い出せる。ヒットしたものが上の例外表に収まっているかを確認する。`-I` はバイナリ（フォント・PNG など、たまたまこのバイト列を含む）を除外するために必須。
+The following command finds Japanese text that has slipped into tracked files. Confirm that every hit falls within the exception table above. `-I` is required to exclude binaries (fonts, PNGs, etc. that happen to contain these byte sequences).
 
 ```bash
 git ls-files -z | xargs -0 grep -IlP '[\x{3040}-\x{30ff}\x{4e00}-\x{9fff}]'

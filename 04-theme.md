@@ -1,27 +1,27 @@
-# 04 テーマ
+# 04 Theme
 
-## カラーシステムは Base16 を正とする
+## Base16 Is the Source of Truth for the Color System
 
-全テーマは [base16](https://github.com/chriskempson/base16) の 16 色スキームとして定義し、セマンティックトークンを経由して UI に適用する。コンポーネントは生の色値を持たず、必ずセマンティックトークンを参照すること。
+Every theme is defined as a 16-color [base16](https://github.com/chriskempson/base16) scheme and applied to the UI through semantic tokens. Components never hold raw color values; they must always reference semantic tokens.
 
-### 3 段ブリッジ
+### Three-Stage Bridge
 
 ```text
-base16 スキーム → --c-*（実行時 CSS 変数） → --color-*（Tailwind） → コンポーネント
+base16 scheme → --c-* (runtime CSS variables) → --color-* (Tailwind) → components
 ```
 
-1. `src/themes/base16.ts` の `SEMANTIC_MAP` が base16 → セマンティック名を対応付ける:
+1. `SEMANTIC_MAP` in `src/themes/base16.ts` maps base16 → semantic names:
    `bg`(base00), `surface`(01), `overlay`/`border`(02), `muted`(03), `secondary-fg`(04), `fg`(05), `bright-fg`(06), `highlight`(07), `error`(08), `warn`(09), `accent2`(0A), `success`(0B), `info`(0C), `primary`(0D), `secondary-accent`(0E), `special`(0F)
-2. `schemeToCssVars()` が `[data-theme="<id>"]` ブロックとして `--c-*` を生成し、`ThemeProvider` が単一の `<style>` に注入する
-3. `src/styles.css` の `@theme inline` で `--color-*: var(--c-*)` にブリッジし、`bg-bg` / `text-fg` / `border-border` 等のユーティリティとして使う。shadcn 互換エイリアス（`--color-background`、`--color-primary-foreground` 等）も同ブロックで定義する
+2. `schemeToCssVars()` generates `--c-*` as a `[data-theme="<id>"]` block, and `ThemeProvider` injects it into a single `<style>` element
+3. `@theme inline` in `src/styles.css` bridges it as `--color-*: var(--c-*)`, to be used as utilities such as `bg-bg` / `text-fg` / `border-border`. shadcn-compatible aliases (`--color-background`, `--color-primary-foreground`, etc.) are defined in the same block
 
-## 対応必須テーマファミリー
+## Required Theme Families
 
-主要テーマとして以下の 12 ファミリーを全アプリで共通サポートする。各ファミリーは light / dark ペアを持つこと（計 24 スキーム）。
+Every app supports the following 12 families as the main themes. Each family must have a light / dark pair (24 schemes in total).
 
-| ファミリー | 備考 |
+| Family | Notes |
 | --- | --- |
-| Gruvbox | デフォルトテーマ（`gruvbox-dark`） |
+| Gruvbox | Default theme (`gruvbox-dark`) |
 | Solarized | |
 | Nord | |
 | Catppuccin | |
@@ -34,21 +34,21 @@ base16 スキーム → --c-*（実行時 CSS 変数） → --color-*（Tailwind
 | Rosé Pine | |
 | Tomorrow | |
 
-## テーマ定義の共通化
+## Sharing Theme Definitions
 
-- `src/themes/base16.ts`、`src/themes/schemes.ts`、`src/themes/ThemeProvider.tsx` はシリーズ共通コードとし、アプリ間でコピー同期する（差分を作らない。localStorage キーの `<app>.theme` プレフィックスと `<style>` 要素 id のみアプリ名に置換可）
-- 新テーマの追加はまず巡の `schemes.ts` に追加し、全アプリへ展開する
+- `src/themes/base16.ts`, `src/themes/schemes.ts`, and `src/themes/ThemeProvider.tsx` are series-wide shared code, kept in sync across apps by copying (no differences allowed; only the `<app>.theme` prefix of the localStorage key and the `<style>` element id may be replaced with the app name)
+- A new theme is added to meguri's `schemes.ts` first and then rolled out to every app
 
-## 切替と永続化
+## Switching and Persistence
 
-- ダークモードは `prefers-color-scheme` ではなく `<html data-theme="<id>">` 属性の切替で実現する。各スキームは `appearance: "light" | "dark"` を持ち、`setMode` でファミリー内ペアを切り替える
-- 永続化は `localStorage`（キー: `<app>.theme`、例 `meguri.theme`）
-- FOUC 対策として `public/theme-boot.js` を `index.html` の `<head>` で読み込み、初回描画前に `data-theme` を適用する
+- Dark mode is implemented by switching the `<html data-theme="<id>">` attribute, not by `prefers-color-scheme`. Each scheme has `appearance: "light" | "dark"`, and `setMode` switches between the pair within a family
+- Persistence uses `localStorage` (key: `<app>.theme`, e.g. `meguri.theme`)
+- To prevent FOUC, load `public/theme-boot.js` in the `<head>` of `index.html` and apply `data-theme` before the first paint
 
-## テーマプレビュー
+## Theme Preview
 
-設定画面のテーマカードには `deriveTokens()` を通した**セマンティックトークン 6 色**（`bg` / `border` / `muted` / `primary` / `accent2` / `error`）のスウォッチを表示する。
+The theme cards on the settings screen show swatches of **six semantic tokens** (`bg` / `border` / `muted` / `primary` / `accent2` / `error`) passed through `deriveTokens()`.
 
-生の palette スロットではなく派生後の値を使うのは、スウォッチが「実際に UI で使われる色」と一致する必要があるため。上流の base16 スキームには非単調なランプや、スロットをアクセントに転用しているものがあり、生の値を並べると一部テーマで見えなくなる chrome 色（hairline・二次テキスト）を切り替える前に判断できない。
+Derived values are used instead of raw palette slots because the swatches must match the colors actually used in the UI. Some upstream base16 schemes have non-monotonic ramps or repurpose slots as accents, so lining up the raw values would not let users judge, before switching, the chrome colors (hairlines, secondary text) that become invisible in some themes.
 
-実装は巡の [`src/routes/Settings/index.tsx`](../meguri/src/routes/Settings/index.tsx) の `PREVIEW_TOKENS` を正とする。
+The source of truth for the implementation is `PREVIEW_TOKENS` in meguri's [`src/routes/Settings/index.tsx`](https://github.com/zabuton-app/meguri/blob/main/src/routes/Settings/index.tsx).

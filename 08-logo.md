@@ -1,38 +1,38 @@
-# 08 ロゴ
+# 08 Logo
 
-座布団シリーズのロゴは [巡のロゴ](../meguri/logo/)（`meguri-icon-1f.svg`）をベースデザインとする。
+Logos in the zabuton series use [meguri's logo](https://github.com/zabuton-app/meguri/tree/main/logo) (`meguri-icon-1f.svg`) as the base design.
 
-## 構成ルール
+## Composition Rules
 
-- **モチーフはアプリの表示名の漢字 1 文字**（[00 ブランドと命名](00-brand.md)参照）
-- **文字色はシリーズ共通の生成り `#f6efe0`**。ただし背景が暗色でこの生成りとのコントラストが得られない場合に限り、アプリ固有の明色を文字・内枠罫に用いてよい。採用時はカラー一覧に併記する
-- **背景はアプリ固有カラーのグラデーション**とする。アプリの個性はこの背景カラーで表現する。ごく暗い色でグラデーションの差が視認できない場合は単色でよい
-- 文字（テキスト要素）は**必ずパス化（アウトライン化）**して配布物に含める。フォント環境に依存させない
+- **The motif is the single kanji of the app's display name** (see [00 Brand and Naming](00-brand.md))
+- **The glyph color is the series-wide kinari (off-white) `#f6efe0`**. Only when the background is dark and does not provide enough contrast with this kinari may an app-specific light color be used for the glyph and the inner border rule. When adopted, list it alongside in the color table
+- **The background is a gradient of the app-specific color**. The app's individuality is expressed through this background color. When the color is so dark that the gradient difference is not visible, a solid color is fine
+- The glyph (text element) **must be converted to paths (outlined)** in distributed artifacts. Do not depend on the font environment
 
-## ファイル体制
+## File Layout
 
-`<リポジトリルート>/logo/` に以下を置く。
+Put the following in `<repository root>/logo/`.
 
-- `<app>-icon.svg` — 編集用マスター（テキスト要素を含んでよい）
-- `<app>-icon.paths.svg` — パス化済み。書き出し・配布はこちらを元にする
+- `<app>-icon.svg` — The editable master (may contain text elements)
+- `<app>-icon.paths.svg` — Converted to paths. Exports and distribution are based on this file
 
-## 書き出しサイズ
+## Export Sizes
 
-巡の実績を標準とする。生成は `icon-gen` スキル（`.claude/skills/icon-gen/generate-icons.sh`）で自動化されており、ロゴSVGから以下のPNG群と electron-builder 用の `build/icon.{png,ico,icns}`・Microsoft Store 用 appx タイルを一括生成できる。
+meguri's established set is the standard. Generation is automated by the `icon-gen` skill (`.claude/skills/icon-gen/generate-icons.sh`), which produces the PNGs below from the logo SVG in one go, along with `build/icon.{png,ico,icns}` for electron-builder and the appx tiles for the Microsoft Store.
 
-- **アプリアイコン**: `app-32.png` / `app-64.png` / `app-128.png` / `app-256.png` / `app-512.png`、および `appicon-1024.png`
-- **トレイアイコン**（全アプリ必須。[01 レイアウト](01-layout.md)参照）: `tray-16.png` / `tray-32.png` / `tray-64.png` / `tray-256.png`
+- **App icons**: `app-32.png` / `app-64.png` / `app-128.png` / `app-256.png` / `app-512.png`, and `appicon-1024.png`
+- **Tray icons** (required for every app; see [01 Layout](01-layout.md)): `tray-16.png` / `tray-32.png` / `tray-64.png` / `tray-256.png`
 
-## アプリ別カラー一覧
+## Colors per App
 
-| アプリ | カラー名 | グラデーション |
-| ------ | -------- | -------------- |
-| 巡（meguri） | 朱 | `#bd4028` → `#93301c` |
-| 刻（kizami） | トマト | `#ff6b57` → `#e0432e` |
+| App | Color name | Gradient |
+| --- | ---------- | -------- |
+| 巡 (meguri) | Shu (vermilion) | `#bd4028` → `#93301c` |
+| 刻 (kizami) | Tomato | `#ff6b57` → `#e0432e` |
 
-新しいアプリにカラーを割り当てるときは、近い色相のアプリが並ばないよう、この表全体を見て決めること。
+When assigning a color to a new app, look at this whole table so that apps with similar hues do not end up side by side.
 
-## TODO: 未確定の規約
+## TODO: Undecided Conventions
 
-- セーフエリア（文字と外周の余白率）の数値化
-- 背景の角丸・透過の扱い（OS ごとのマスク差への対応方針）
+- Quantifying the safe area (the margin ratio between the glyph and the outer edge)
+- Handling of background corner radius and transparency (how to deal with per-OS mask differences)

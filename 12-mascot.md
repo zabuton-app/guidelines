@@ -1,48 +1,48 @@
-# 12 マスコット
+# 12 Mascot
 
-座布団シリーズの公式キャラクターとして、紺の座布団をモチーフにしたマスコットを採用した（2026-10）。四隅の房を手足に見立てたキャラクターで、シリーズ全体の顔として扱う。
+The zabuton series adopted a mascot modeled on a navy zabuton cushion as its official character (2026-10). The tassels at its four corners serve as its arms and legs, and it is treated as the face of the whole series.
 
-## 位置づけ
+## Role
 
-- **マスコットはシリーズ（座布団ブランド）のキャラクター**であり、特定のアプリに属さない
-- **アプリのロゴは従来どおり表示名の漢字1文字**とする（[08 ロゴ](08-logo.md)参照）。マスコットでアプリアイコン・トレイアイコンを置き換えない
-- 巡のペット機能（`src/components/pet/`）に登場するピクセルアートの座布団は、このマスコットと同じデザインである
+- **The mascot is the character of the series (the zabuton brand)** and does not belong to any particular app
+- **An app's logo remains the single kanji of its display name** (see [08 Logo](08-logo.md)). Do not replace app icons or tray icons with the mascot
+- The pixel-art zabuton that appears in meguri's pet feature (`src/components/pet/`) has the same design as this mascot
 
-## アセットの置き場所
+## Where the Assets Live
 
-原本は `zabuton-app/mascot` リポジトリ（ローカルは [../mascot/](../mascot/)）で管理する。ファイル名の規則・アニメーションのフレーム構成は同リポジトリのREADMEを正とする。
+The originals are maintained in the [`zabuton-app/mascot`](https://github.com/zabuton-app/mascot) repository. That repository's README is the source of truth for file naming rules and animation frame composition.
 
-| 種類 | 内容 | 形式 |
-| ---- | ---- | ---- |
-| ベクター版 | `mascot-a`（両手を上げたポーズ）、`mascot-c-no-enso`（手を下ろし頬を染めたポーズ） | SVG、2048px PNG |
-| ピクセルアート版 | 24×20グリッドのスプライト。16種のアニメーション | フレーム単位のSVG・PNG、ループGIF |
+| Kind | Contents | Format |
+| ---- | -------- | ------ |
+| Vector version | `mascot-a` (pose with both hands raised), `mascot-c-no-enso` (pose with hands down and blushing cheeks) | SVG, 2048px PNG |
+| Pixel-art version | Sprites on a 24×20 grid. 16 animations | Per-frame SVG and PNG, looping GIF |
 
-アプリやサイトで使う場合は、他の共有リソースと同じく**コピー運用**とする。コピー後に独自の差分を作らず、修正は `mascot` リポジトリ側で行ってから取り込み直す。
+When used in an app or a site, the assets are **shared by copying**, like other shared resources. Do not introduce differences after copying; make fixes in the `mascot` repository and then pull them in again.
 
-## 背景による使い分け
+## Choosing a Variant by Background
 
-本体が紺色のため、暗い背景ではそのままだと輪郭が沈む。すべてのアセットに通常版と `-on-dark` 版があるので、背景に応じて使い分ける。
+Because the body is navy, the outline sinks into dark backgrounds as is. Every asset has a regular version and an `-on-dark` version, so choose according to the background.
 
-- **明るい背景**: 通常版（ベクター版は輪郭なし、ピクセルアート版は墨色 `#0b1520` の輪郭）
-- **暗い背景**: `-on-dark` 版（生成り `#f6efe0` の輪郭付き）
-- 背景色を指定できない場所（OGP画像・ストア掲載画像など）は、背景込みの `-square` 版（生成り `#f6efe0`）または `-on-dark-square` 版（`#1d2021`）を使う
+- **Light background**: the regular version (the vector version has no outline; the pixel-art version has a sumi-ink `#0b1520` outline)
+- **Dark background**: the `-on-dark` version (with a kinari `#f6efe0` outline)
+- Where the background color cannot be specified (OGP images, store listing images, etc.), use the `-square` version (kinari `#f6efe0`) or the `-on-dark-square` version (`#1d2021`), which include a background
 
-## カラー
+## Colors
 
-| 用途 | カラー |
-| ---- | ------ |
-| 本体 | `#132537` |
-| 本体の影 | `#0b1826` |
-| ハイライト | `#243a55` |
-| 縁取り・房の結び目 | `#d9b062` |
-| 房 | `#b27f31` |
-| 目・口・`-on-dark` 版の輪郭 | `#f6efe0`（ロゴの文字色と共通の生成り） |
+| Use | Color |
+| --- | ----- |
+| Body | `#132537` |
+| Body shadow | `#0b1826` |
+| Highlight | `#243a55` |
+| Trim and tassel knots | `#d9b062` |
+| Tassels | `#b27f31` |
+| Eyes, mouth, and the outline of the `-on-dark` version | `#f6efe0` (the same kinari as the logo glyph color) |
 
-色を変えたバリエーション（アプリ固有カラーへの塗り替えなど）は作らない。
+Do not create recolored variations (such as repainting it in an app-specific color).
 
-## TODO: 未確定の規約
+## TODO: Undecided Conventions
 
-- マスコットの名前
-- `mascot-a` と `mascot-c-no-enso` のどちらを基本ポーズとするか
-- 使用可否の線引き（Aboutセクション・landing page・ストア掲載画像などへの掲載ルール）
-- 第三者による利用条件（`mascot` リポジトリのライセンス）
+- The mascot's name
+- Whether `mascot-a` or `mascot-c-no-enso` is the default pose
+- Where to draw the line on usage (rules for appearing in the About section, landing pages, store listing images, etc.)
+- Terms of use for third parties (the license of the `mascot` repository)

@@ -1,64 +1,64 @@
-# 03 設定画面
+# 03 Settings Screen
 
-設定画面はルーテッドモーダル（[02 ナビゲーション](02-navigation.md)）として実装する。実装は `src/routes/Settings/` に置き、`index.tsx`（画面の組み立て）＋ `SettingsModal.tsx`（枠）＋ セクション別ファイル（`AboutSection.tsx` 等）に分ける。セクションが状態やイベント購読を持つ場合は必ず別ファイルにし、`index.tsx` には行パターンのマークアップだけを残す。
+Implement the settings screen as a routed modal ([02 Navigation](02-navigation.md)). The implementation lives in `src/routes/Settings/`, split into `index.tsx` (screen assembly) + `SettingsModal.tsx` (frame) + per-section files (`AboutSection.tsx`, etc.). When a section has state or event subscriptions, always put it in a separate file and leave only the row pattern markup in `index.tsx`.
 
-## モーダル寸法
+## Modal Dimensions
 
-- オーバーレイ: `fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm`
-- パネル: `relative flex h-[85vh] w-full max-w-xl flex-col overflow-hidden rounded-xl border border-border bg-bg shadow-2xl`
-- ヘッダー: タイトル + 右端に閉じるボタン（`X` アイコン、`title` に「閉じる (Esc)」）。`border-b border-border bg-bg px-4 py-2.5` で固定
-- 本文: `ScrollArea`（`min-h-0 flex-1`、`viewportClassName="p-4 pb-6"`）内に `mx-auto flex max-w-2xl flex-col gap-8`
+- Overlay: `fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm`
+- Panel: `relative flex h-[85vh] w-full max-w-xl flex-col overflow-hidden rounded-xl border border-border bg-bg shadow-2xl`
+- Header: title + a close button at the right end (`X` icon, with "Close (Esc)" as its `title`). Fixed with `border-b border-border bg-bg px-4 py-2.5`
+- Body: `mx-auto flex max-w-2xl flex-col gap-8` inside a `ScrollArea` (`min-h-0 flex-1`, `viewportClassName="p-4 pb-6"`)
 
-## セクション順序
+## Section Order
 
-既定は単一スクロールのセクション積みとする。順序は以下で固定。
+The default is a single scrolling stack of sections. The order is fixed as follows.
 
-1. Language（言語）
-2. アプリ固有の設定（巡: Scenes / Keybinding 等）
-3. Appearance（ライト / ダーク）
-4. Theme（テーマファミリー選択）
-5. Update（自動更新があるアプリのみ）
-6. Support（寄付リンク、任意）
-7. About（必須。[06 About とライセンス](06-about-and-licensing.md)を参照）
+1. Language
+2. App-specific settings (meguri: Scenes / Keybinding, etc.)
+3. Appearance (light / dark)
+4. Theme (theme family selection)
+5. Update (only for apps with automatic update checks)
+6. Support (donation link, optional)
+7. About (required. See [06 About and Licensing](06-about-and-licensing.md))
 
-### 例外: タブ構成
+### Exception: Tabbed Layout
 
-設定項目が増えて単一スクロールでは目的の項目に辿り着けなくなったアプリは、カテゴリ別のタブに分割してよい。巡が該当し、`src/routes/Settings/SettingsTabs.tsx` として実装されている（2026-08-29 にタブ化、2026-09-23 に本項を追記）。
+An app whose settings have grown to the point where a single scroll no longer gets users to the item they want may split them into tabs by category. meguri is such an app, implemented as `src/routes/Settings/SettingsTabs.tsx` (tabs introduced on 2026-08-29; this section added on 2026-09-23).
 
-タブに分ける場合も次は守る。
+Even when splitting into tabs, keep the following.
 
-- モーダル寸法・行パターン・コントロールの選択基準は上記のまま変えない
-- タブ内のセクション順序は、上の既定順を崩さない範囲でカテゴリへ割り振る。About は最後のタブの末尾に置く
-- タブの選択状態は永続化せず、開くたびに先頭のタブから始める
-- 新しいアプリはまず単一スクロールで始める。最初からタブに分けない
+- Do not change the modal dimensions, the row pattern, or the control selection criteria described in this chapter
+- Assign sections to categories without breaking the default order above within each tab. Put About at the end of the last tab
+- Do not persist the selected tab; start from the first tab every time the modal opens
+- A new app starts with a single scroll. Do not split into tabs from the beginning
 
-## 行パターン
+## Row Pattern
 
-各セクションは「左にラベル + 説明、右にコントロール」の行パターンで統一する。
+Every section follows the same row pattern: label + description on the left, control on the right.
 
 ```tsx
 <section className="flex items-center justify-between gap-3 rounded-md border border-border bg-surface px-4 py-3">
   <div className="flex flex-col">
-    <span className="text-sm font-semibold text-bright-fg">{/* ラベル */}</span>
-    <span className="text-xs text-muted">{/* 説明 */}</span>
+    <span className="text-sm font-semibold text-bright-fg">{/* label */}</span>
+    <span className="text-xs text-muted">{/* description */}</span>
   </div>
-  {/* コントロール */}
+  {/* control */}
 </section>
 ```
 
-## コントロールの選択基準
+## Control Selection Criteria
 
-- **選択肢がリスト**（言語、プリセット等）: Radix ベースの `Select`（`@/components/ui/select`）
-- **二者択一**（ライト / ダーク）: セグメントトグル。選択中は `bg-primary text-primary-foreground`、非選択は `bg-bg text-muted hover:text-fg`。アイコン（`Sun` / `Moon`）付き
-- **テーマファミリー**: カードグリッド（`grid grid-cols-1 gap-2 sm:grid-cols-2`）。各カードに 6 色スウォッチ（`deriveTokens()` を通したセマンティックトークン。[04 テーマ](04-theme.md)のテーマプレビュー参照）+ ファミリー名、選択中は `border-primary ring-1 ring-primary` + `Check` アイコン
-- **自由記述の複数行**（巡: AI のタグ語彙）: 全幅の `textarea`。`font-mono text-xs`・`resize-y`・`spellCheck={false}`・`aria-label` にラベルと同じ文言
-- **連続値**（巡: AI のしきい値）: 全幅の `input type="range"`。現在値はラベル行の右端に `font-mono` で表示する。ネイティブの range は `role="slider"` と矢印キー操作を最初から持つので、独自実装しない
-- **同種の項目が並ぶ一覧**（巡: AI のモデル一覧）: 1 列のリスト。各行は `rounded-md border border-border bg-bg px-3 py-2` で、左に名称 + 副次情報、右にアクション。選択中の行は `Check` アイコン + 選択中ラベルを添える
+- **A list of choices** (language, presets, etc.): the Radix-based `Select` (`@/components/ui/select`)
+- **A binary choice** (light / dark): a segmented toggle. Selected is `bg-primary text-primary-foreground`, unselected is `bg-bg text-muted hover:text-fg`. With icons (`Sun` / `Moon`)
+- **Theme family**: a card grid (`grid grid-cols-1 gap-2 sm:grid-cols-2`). Each card has six color swatches (semantic tokens passed through `deriveTokens()`; see the theme preview in [04 Theme](04-theme.md)) + the family name, and the selected card gets `border-primary ring-1 ring-primary` + a `Check` icon
+- **Free-form multi-line text** (meguri: AI tag vocabulary): a full-width `textarea` with `font-mono text-xs`, `resize-y`, `spellCheck={false}`, and an `aria-label` with the same text as the label
+- **A continuous value** (meguri: AI threshold): a full-width `input type="range"`. Show the current value at the right end of the label row in `font-mono`. A native range already has `role="slider"` and arrow key handling, so do not build a custom one
+- **A list of items of the same kind** (meguri: AI model list): a single-column list. Each row is `rounded-md border border-border bg-bg px-3 py-2`, with the name + secondary information on the left and actions on the right. The selected row gets a `Check` icon + a "selected" label
 
-### 行パターンの例外
+### Exception to the Row Pattern
 
-コントロールが全幅を要する場合（`textarea` / `range` / 一覧）は、ラベル + 説明を上、コントロールを下にした縦積みにしてよい。その場合もラベル + 説明のマークアップは行パターンと同一にする。
+When a control needs the full width (`textarea` / `range` / list), it may be stacked vertically with the label + description on top and the control below. Even then, the label + description markup stays identical to the row pattern.
 
-### 保存のタイミング
+### When Settings Are Saved
 
-設定は即時反映を原則とする。反映に重い再計算を伴うもの（巡: AI のタグ語彙・しきい値は、変更をタグへ反映するのにライブラリ全件の再タグ付けが必要）に限り、明示的な保存ボタンを置き、未反映であることを警告として表示する。
+Settings take effect immediately as a rule. Only for settings whose application involves heavy recomputation (meguri: applying a change to the AI tag vocabulary or threshold requires re-tagging the entire library) do you place an explicit save button and show a warning that the change has not been applied yet.

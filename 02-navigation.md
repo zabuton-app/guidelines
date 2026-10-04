@@ -1,23 +1,23 @@
-# 02 ナビゲーション
+# 02 Navigation
 
-## ルーティング
+## Routing
 
-- ルーターは `react-router` v8 の hash ルーティングを使う（`createHashRouter`。file:// ベースの Electron レンダラで安定するため）。v7 までの `react-router-dom` ではなく、単一パッケージの `react-router` を使う
-- メイン画面は常時マウントし、詳細・設定などは**子ルートのモーダル**として上に重ねる（背後の画面の状態を保つ）
+- Use hash routing from `react-router` v8 as the router (`createHashRouter`, because it is stable in a file://-based Electron renderer). Use the single `react-router` package, not `react-router-dom` from v7 and earlier
+- Keep the main screen mounted at all times, and layer detail, settings, and similar screens on top as **child-route modals** (preserving the state of the screen behind them)
 
-## ルーテッドモーダル
+## Routed Modals
 
-モーダルで開く画面（設定・詳細等）は URL ルートを持たせる。
+Screens opened as a modal (settings, detail, etc.) get their own URL route.
 
-- 開く: レールのボタン等から `navigate("<親パス>/settings")` する
-- 閉じる: `navigate("..")`（または親パスへの `navigate`）で子ルートを外す。モーダルは Esc キーとバックドロップクリックの両方で閉じられること
-- モーダル枠: `fixed inset-0 z-50` + オーバーレイ `bg-black/70 backdrop-blur-sm`
+- Open: call `navigate("<parent path>/settings")` from a rail button or similar
+- Close: remove the child route with `navigate("..")` (or `navigate` to the parent path). The modal must be closable with both the Esc key and a backdrop click
+- Modal frame: `fixed inset-0 z-50` + overlay `bg-black/70 backdrop-blur-sm`
 
-## レールの配置とルーター
+## Rail Placement and the Router
 
-レールの実装がルート状態に依存するかどうかで配置を選ぶ。
+Choose the placement based on whether the rail implementation depends on route state.
 
-- **ルート状態に依存する場合**: レイアウトルートを作り、レールを `<Route element={<AppLayout />}>` の中に置く。レール内で `useParams` / `useNavigate` が使える
+- **Depends on route state**: Create a layout route and put the rail inside `<Route element={<AppLayout />}>`. `useParams` / `useNavigate` are available inside the rail
 
   ```tsx
   <Route element={<AppLayout />}>
@@ -27,8 +27,8 @@
   </Route>
   ```
 
-- **ルート状態に依存しない場合（巡型）**: レールを `RouterProvider` の外に置き、`window.location.hash` 直接操作でナビゲートしてもよい
+- **Does not depend on route state (meguri style)**: The rail may be placed outside `RouterProvider` and navigate by manipulating `window.location.hash` directly
 
-## 旧 URL の互換
+## Compatibility with Old URLs
 
-画面の URL 構造を変えた場合、旧 URL からのリダイレクトルート（`<Route path="/settings" element={<Navigate to="/" replace />} />` 等）を残すこと。
+When you change a screen's URL structure, keep a redirect route from the old URL (such as `<Route path="/settings" element={<Navigate to="/" replace />} />`).
