@@ -12,7 +12,7 @@ Every app uses a two-column structure: left rail + content.
 ```
 
 - Always put `min-w-0 flex-1` on the content side (prevents accidental horizontal scrolling)
-- Keep the OS-native title bar (do not set `frame: false`). Hide the menu with `autoHideMenuBar: true` + `Menu.setApplicationMenu(null)`
+- meguri draws its own title bar across the top of the window, above the rail ([meguri#578](https://github.com/zabuton-app/meguri/issues/578)). `titleBarStyle: "hidden"` hides the native one. The bar and the rail share one color and read as one frame, and the content is a bordered, rounded panel set into it. The bar holds the current screen's header (meguri's Home header: the path, the search box in the middle, the toolbar), with the window buttons at one end: Windows and Linux get the app's own minimize, maximize/restore and close buttons, and macOS keeps the OS's traffic lights. The end is a user setting ("Window buttons"), left by default on macOS and right elsewhere; "None" hides them, for tiling window managers, on any OS. Apps that have not adopted it yet (kizami) keep the OS-native title bar. Either way, do not set `frame: false`, and hide the menu with `autoHideMenuBar: true` + `Menu.setApplicationMenu(null)`
 - **Exception**: An app with no navigation items, where the rail would hold only the logo and the settings button, may drop the left rail and consolidate everything into a single top bar. In that case, put the logo at the left end and the app-wide actions (settings button, etc.) at the right end
   - Even when there are multiple screens, this exception applies if there is no navigation back and forth between them and the transition is linear
   - In an app that already has a vertical tool palette inside the content area, adding a rail would put two vertical strips with different meanings side by side. That is exactly the confusion this chapter is meant to prevent, so the exception takes priority
@@ -41,7 +41,7 @@ Place a fixed-width vertical rail at the left edge of the screen. It is not coll
 
 ## Logo Placement
 
-- Show the app logo at the top of the rail using `logo/app-256.png` with `size-[50px] shrink-0`. This is the only place the logo appears in the UI
+- Show the app logo at the top of the rail using `logo/app-256.png` with `size-[50px] shrink-0`. This is the only place the logo appears in the UI. In an app with its own title bar (meguri), the logo still heads the rail's column: it sits in the title bar right above the rail with `size-7 shrink-0`, and comes down to the top of the rail (`size-[50px]`) while the window buttons take the bar's left end
 - In an app without a left rail (the exception above), show `logo/app-256.png` at the left end of the top bar with `size-8 shrink-0`. The "one place only" principle still applies
 - Put logo assets in each repository's `logo/` directory with shared names: `app-{32,64,128,256,512}.png`, `appicon-1024.png`, `tray-{16,32,64,256}.png`
 - The tray icon is embedded as base64 (`TRAY_ICON_BASE64`) in `electron/main.ts`
