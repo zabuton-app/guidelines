@@ -41,7 +41,7 @@ Place a fixed-width vertical rail at the left edge of the screen. It is not coll
 
 ## Logo Placement
 
-- Show the app logo at the top of the rail using `logo/app-256.png` with `size-[50px] shrink-0`. This is the only place the logo appears in the UI. In an app with its own title bar (meguri), the logo still heads the rail's column: it sits in the title bar right above the rail with `size-7 shrink-0`, and comes down to the top of the rail (`size-[50px]`) while the window buttons take the bar's left end
+- Show the app logo at the top of the rail using `logo/app-256.png` with `size-[50px] shrink-0`. This is the only place the logo appears in the UI. In an app with its own title bar (meguri), the logo still heads the rail's column: it sits in the title bar right above the rail with `size-9 shrink-0`, and comes down to the top of the rail (`size-[50px]`) while the window buttons take the bar's left end
 - In an app without a left rail (the exception above), show `logo/app-256.png` at the left end of the top bar with `size-8 shrink-0`. The "one place only" principle still applies
 - Put logo assets in each repository's `logo/` directory with shared names: `app-{32,64,128,256,512}.png`, `appicon-1024.png`, `tray-{16,32,64,256}.png`
 - The tray icon is embedded as base64 (`TRAY_ICON_BASE64`) in `electron/main.ts`
