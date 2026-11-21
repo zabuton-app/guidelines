@@ -33,7 +33,7 @@ Place a fixed-width vertical rail at the left edge of the screen. It is not coll
 └────┘
 ```
 
-- Container: `<nav className="flex h-full w-16 shrink-0 flex-col items-center gap-2 border-r border-border bg-bg py-3">`
+- Container: `<nav className="flex h-full w-16 shrink-0 flex-col items-center gap-2 bg-chrome pb-3 pt-1 text-fg">`. In an app with its own title bar (meguri), the rail is part of the frame: it has the title bar's `chrome` color and no border of its own. An app that keeps the OS title bar (kizami) keeps `border-r border-border bg-bg py-3` until it adopts the frame
 - The width is fixed at `w-16` (64px)
 - Put content-dependent items in a `ScrollArea` (`min-h-0 w-full flex-1`, `viewportClassName="px-1 pt-1"`) so that the rail itself does not grow even with many items
 - Reordering items uses dnd-kit (`restrictToVerticalAxis` + `restrictToFirstScrollableAncestor`, `activationConstraint: { distance: 4 }`, `animateLayoutChanges: () => false`) and is allowed vertically only

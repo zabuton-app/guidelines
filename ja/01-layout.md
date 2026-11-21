@@ -33,7 +33,7 @@
 └────┘
 ```
 
-- コンテナ: `<nav className="flex h-full w-16 shrink-0 flex-col items-center gap-2 border-r border-border bg-bg py-3">`
+- コンテナ: `<nav className="flex h-full w-16 shrink-0 flex-col items-center gap-2 bg-chrome pb-3 pt-1 text-fg">`。独自のタイトルバーを持つアプリ（巡）では、レールは枠の一部になる。タイトルバーと同じ`chrome`の色で、自分の枠線は持たない。OSのタイトルバーのままのアプリ（刻）は、枠を取り入れるまで`border-r border-border bg-bg py-3`のままにする
 - 幅は `w-16`（64px）固定
 - コンテンツ依存の項目は `ScrollArea`（`min-h-0 w-full flex-1`、`viewportClassName="px-1 pt-1"`）に入れ、多数になってもレール自体は伸びない
 - 項目の並び替えは dnd-kit（`restrictToVerticalAxis` + `restrictToFirstScrollableAncestor`、`activationConstraint: { distance: 4 }`、`animateLayoutChanges: () => false`）で縦方向のみ許可
