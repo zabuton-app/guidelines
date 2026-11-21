@@ -7,6 +7,15 @@
 - アイコンは lucide-react、トーストは sonner、並び替えは dnd-kit で統一する
 - **確認ダイアログはアプリ内モーダルの `ConfirmDialog`（`useConfirm()` が `Promise<boolean>` を返す）を使う**。`window.confirm` / `window.alert` 等のネイティブダイアログは禁止（メインウィンドウ以外のウィンドウを開く導線を作らない）。`ConfirmProvider` をアプリルートに置く
 
+### スクロールバー
+
+- **画面に見えるスクロールバーはすべて共通の`ScrollArea`（`src/components/ui/scroll-area.tsx`）にする**。プラットフォーム標準のスクロールバーを画面に残さない。`overflow-y-auto` / `overflow-auto`を付けた要素はOSのスクロールバーを描画し、テーマに追従せずプラットフォームごとに見た目も変わる
+- 大きさはビューポートではなくルートに指定する。flexの縦並び（モーダル本文、タブパネル）の中では`min-h-0 flex-1`。コンテンツの余白は`viewportClassName`に書く
+- `max-h-*`で高さを制限する領域は、その指定を`viewportClassName`に書く。ルートに付けるとスクロールせずに切り取られる
+- コンテンツが短いときもビューポートいっぱいに広げたい場合（下端まで伸ばすペインの罫線、`sticky bottom-0`で固定するフッター）は、`fillViewport`を渡し、コンテンツ側に`flex-1`を指定する。Radixはコンテンツを`display: table`の箱で包むため、コンテンツ自体に`min-h-full`を付けても効かない。`fillViewport`がその箱のスタイルを直す。この箱の存在は`scroll-area.tsx`の中だけの知識とし、画面側から`[&>div]:`セレクタで触らない
+- バーを見せる必要のない小さなはみ出し（狭いウィンドウで収まらないタブ列やセグメントコントロール）は`overflow-x-auto`のままにし、`src/styles.css`の`no-scrollbar`クラスでバーを隠す
+- `@tanstack/react-virtual`で仮想化するリストは、`ScrollArea`に`viewportRef`を渡して`getScrollElement`に使う
+
 ### コピー運用ルール
 
 - 共有コンポーネントはアプリ間でコピー同期する。**コピー後に独自の差分を作らない**（整形差分も避ける）
